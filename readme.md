@@ -128,8 +128,8 @@ Listed price: €300,000
 
 🧭 Future Enhancements
 
-Integrate with real real-estate listing APIs (e.g. ImmobilienScout24)
+- Integrate with real real-estate listing APIs (e.g. ImmobilienScout24)
 
-Add dashboard visualization using Streamlit or Gradio
+- Add dashboard visualization using Streamlit or Gradio
 
-Auto-post daily undervalued finds to LinkedIn or Telegram via n8n
+- Auto-post daily undervalued finds to LinkedIn or Telegram via n8n
