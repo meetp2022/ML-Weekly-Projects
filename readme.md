@@ -44,16 +44,20 @@ I deployed the trained ML model with **FastAPI** and connected it to **n8n**, a 
 
 ## 🧩 **Architecture Diagram**
 [ Real Estate Data ]
-            ↓
+↓
 [ ML Model (FastAPI API) ]
-            ↓
+↓
 [ n8n Webhook → Condition → Gmail Node ]
-            ↓
+↓
 [ Email Notification for Undervalued Listings ]
+
 
 ---
 
 ## 🧱 **Project Structure**
+
+
+
 Linear_Regression/
 │
 ├── model/
