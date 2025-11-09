@@ -70,7 +70,7 @@ Linear_Regression/
 
 ## ⚙️ **How to Run**
 
-### 1️⃣ Create and Activate Virtual Environment
+ 1️⃣ Create and Activate Virtual Environment
 ```bash
 python -m venv .venv
 .\.venv\Scripts\activate
