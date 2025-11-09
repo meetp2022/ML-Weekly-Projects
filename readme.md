@@ -118,3 +118,18 @@ Message:
 A property in Berlin - Charlottenburg is undervalued!
 Predicted price: €375,000
 Listed price: €300,000
+
+
+📈 Results
+
+✅ Successfully deployed ML model via API
+✅ Connected automation workflow using n8n
+✅ Received automated Gmail notifications
+
+🧭 Future Enhancements
+
+Integrate with real real-estate listing APIs (e.g. ImmobilienScout24)
+
+Add dashboard visualization using Streamlit or Gradio
+
+Auto-post daily undervalued finds to LinkedIn or Telegram via n8n
