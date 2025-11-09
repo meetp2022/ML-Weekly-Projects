@@ -51,3 +51,65 @@ I deployed the trained ML model with **FastAPI** and connected it to **n8n**, a 
             ↓
 [ Email Notification for Undervalued Listings ]
 
+---
+
+## 🧱 **Project Structure**
+Linear_Regression/
+│
+├── model/
+│ └── model.pkl
+│
+├── Notebooks/
+│ └── linear_regression.ipynb
+│
+├── app.py # FastAPI app
+├── requirements.txt # Dependencies
+├── Results/ # Example outputs
+└── README.md
+---
+
+## ⚙️ **How to Run**
+
+### 1️⃣ Create and Activate Virtual Environment
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate
+
+2️⃣ Install Dependencies
+pip install -r requirements.txt
+
+3️⃣ Run FastAPI App
+uvicorn app:app --reload
+
+
+The API will start at 👉 http://127.0.0.1:8000
+
+4️⃣ Test /predict Endpoint
+
+Send a POST request:
+
+{
+  "city": "Berlin",
+  "Location": "Charlottenburg",
+  "listed_price": 300000,
+  "predicted_price": 375000
+}
+
+5️⃣ Connect with n8n
+
+Create a Webhook in n8n
+
+Add HTTP Request node → points to your FastAPI /predict
+
+Add IF node → listed_price < predicted_price
+
+Add Gmail node → send undervaluation alert
+
+✉️ Example Alert Email
+
+Subject: Undervalued Property Detected 🏠
+
+Message:
+A property in Berlin - Charlottenburg is undervalued!
+Predicted price: €375,000
+Listed price: €300,000
