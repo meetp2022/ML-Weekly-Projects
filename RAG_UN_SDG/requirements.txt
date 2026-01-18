@@ -1,0 +1,31 @@
+# Core data handling
+datasets
+pandas
+numpy
+
+# Visualization (used in notebook)
+matplotlib
+seaborn
+wordcloud
+
+# LangChain ecosystem
+langchain
+langchain-community
+langchain-text-splitters
+
+# Vector database
+chromadb
+
+# Embeddings
+sentence-transformers
+
+# TensorFlow (for USE embeddings)
+tensorflow
+tensorflow-hub
+tensorflow-text
+
+# LLM (Gemini)
+google-generativeai
+
+# Environment variables
+python-dotenv
