@@ -18,4 +18,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./AI-detector/frontend
           force_orphan: true
-          cname: www.aichecking.me
+          cname: aichecking.me
