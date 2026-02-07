@@ -1,4 +1,4 @@
-// API Configuration
+// API Configuration (Trigger Deploy)
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? ''
     : 'https://api.aichecking.me'; // Custom Domain Backend
