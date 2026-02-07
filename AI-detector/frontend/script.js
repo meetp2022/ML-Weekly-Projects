@@ -1,7 +1,7 @@
 // API Configuration
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? ''
-    : 'https://your-backend-api-on-do.com'; // User will replace this after DO deploy
+    : 'https://ai-detector-vbvh3.ondigitalocean.app'; // Live DigitalOcean URL
 
 // DOM Elements
 const textInput = document.getElementById('textInput');
