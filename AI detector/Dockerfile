@@ -21,8 +21,9 @@ RUN python -c "import nltk; nltk.download('punkt')"
 COPY app/ ./app/
 COPY frontend/ ./frontend/
 
-# Expose port
+# Expose port (Documentation only, cloud providers will override)
 EXPOSE 8000
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the application with dynamic port for cloud compatibility
+# Fallback to 8000 if PORT is not set
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
