@@ -19,8 +19,7 @@ RUN pip install --no-cache-dir torch==2.1.1 --index-url https://download.pytorch
 RUN python -c "import nltk; nltk.download('punkt')"
 
 # Copy application code
-COPY app/ ./app/
-COPY frontend/ ./frontend/
+COPY . .
 
 # Expose port (Documentation only, cloud providers will override)
 EXPOSE 8000
