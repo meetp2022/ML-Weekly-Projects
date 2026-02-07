@@ -1,4 +1,4 @@
-// API Configuration (Deploy Trigger: 2026-02-07 16:25)
+// API Configuration (Final Deploy Trigger: www.aichecking.me)
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? ''
     : 'https://api.aichecking.me'; // Custom Domain Backend
