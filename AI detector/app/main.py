@@ -52,10 +52,11 @@ async def startup_event():
     logger.info(f"Environment: {settings.environment}")
     logger.info(f"Model: {settings.model_name}")
     
-    # Preload model
-    from app.models.gpt2_loader import gpt2_loader
-    gpt2_loader.load()
-    logger.info("Model preloaded successfully")
+    # Preload model (commented out to avoid blocking server startup)
+    # from app.models.gpt2_loader import gpt2_loader
+    # gpt2_loader.load()
+    # logger.info("Model preloaded successfully")
+    logger.info("Model will be loaded on the first request")
 
 
 @app.on_event("shutdown")
