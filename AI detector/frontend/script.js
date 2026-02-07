@@ -1,3 +1,8 @@
+// API Configuration
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? ''
+    : 'https://your-backend-api-on-do.com'; // User will replace this after DO deploy
+
 // DOM Elements
 const textInput = document.getElementById('textInput');
 const charCount = document.getElementById('charCount');
@@ -61,7 +66,7 @@ async function analyzeText() {
     updateStatus('Analyzing...', 'warning');
 
     try {
-        const response = await fetch('/api/analyze', {
+        const response = await fetch(`${API_URL}/api/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

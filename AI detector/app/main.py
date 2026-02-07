@@ -23,9 +23,10 @@ app = FastAPI(
 )
 
 # CORS middleware
+# For Phase 1: Restrict this to the GitHub Pages URL in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=["*"], # For production, change to: ["https://meetp2022.github.io"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -41,8 +42,13 @@ if os.path.exists(frontend_path):
     
     @app.get("/")
     async def serve_frontend():
-        """Serve the frontend HTML."""
+        """Serve the frontend HTML (when running as monolith)."""
         return FileResponse(os.path.join(frontend_path, "index.html"))
+
+@app.get("/health")
+async def root_health():
+    """System health check."""
+    return {"status": "ok", "app": settings.app_name}
 
 
 @app.on_event("startup")
