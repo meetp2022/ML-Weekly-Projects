@@ -40,9 +40,9 @@ ENV/
 htmlcov/
 .tox/
 
-# Model cache
+# Model cache (ignore root models dir and large files)
 .cache/
-models/
+/models/
 *.bin
 *.pt
 *.pth
