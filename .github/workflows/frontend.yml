@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'AI detector/frontend/**'
+      - 'AI-detector/frontend/**'
 
 jobs:
   deploy:
@@ -16,5 +16,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./AI detector/frontend
+          publish_dir: ./AI-detector/frontend
           force_orphan: true
