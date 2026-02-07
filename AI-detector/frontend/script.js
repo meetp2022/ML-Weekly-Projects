@@ -1,7 +1,7 @@
 // API Configuration
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? ''
-    : 'https://ai-detector-vbvh3.ondigitalocean.app'; // Live DigitalOcean URL
+    : 'https://api.aichecking.me'; // Custom Domain Backend
 
 // DOM Elements
 const textInput = document.getElementById('textInput');

@@ -26,7 +26,13 @@ app = FastAPI(
 # For Phase 1: Restrict this to the GitHub Pages URL in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # For production, change to: ["https://meetp2022.github.io"]
+    allow_origins=[
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "https://meetp2022.github.io",
+        "https://www.aichecking.me",
+        "https://aichecking.me"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
