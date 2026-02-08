@@ -228,5 +228,28 @@ function updateStatus(message, type) {
     }
 }
 
+// Cookie Consent Logic
+function initCookieBanner() {
+    const cookieBanner = document.getElementById('cookieBanner');
+    const acceptBtn = document.getElementById('acceptCookies');
+
+    if (cookieBanner && acceptBtn) {
+        const cookiesAccepted = localStorage.getItem('cookiesAccepted');
+
+        if (!cookiesAccepted) {
+            // Show banner after a short delay
+            setTimeout(() => {
+                cookieBanner.classList.add('show');
+            }, 1000);
+        }
+
+        acceptBtn.addEventListener('click', () => {
+            localStorage.setItem('cookiesAccepted', 'true');
+            cookieBanner.classList.remove('show');
+        });
+    }
+}
+
 // Initialize
 updateCharCount();
+initCookieBanner();
