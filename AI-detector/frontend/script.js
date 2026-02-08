@@ -51,6 +51,9 @@ function updateCharCount() {
     analyzeBtn.disabled = length < 10;
 }
 
+// Session-level check counter
+let checkCount = 0;
+
 // Analyze text
 async function analyzeText() {
     const text = textInput.value.trim();
@@ -58,6 +61,16 @@ async function analyzeText() {
     if (text.length < 10) {
         alert('Please enter at least 10 characters');
         return;
+    }
+
+    // Track Check Clicked
+    if (window.umami) {
+        umami.track('check_clicked');
+
+        // Track Repeat Check
+        if (checkCount > 0) {
+            umami.track('repeat_check_same_session', { count: checkCount + 1 });
+        }
     }
 
     // Show loading
@@ -83,10 +96,22 @@ async function analyzeText() {
         displayResults(data);
         updateStatus('Analysis complete', 'success');
 
+        // Track Success
+        if (window.umami) {
+            umami.track('result_displayed', { label: data.label });
+        }
+
+        checkCount++;
+
     } catch (error) {
         console.error('Error:', error);
         alert(`Error: ${error.message}`);
         updateStatus('Error', 'danger');
+
+        // Track Error
+        if (window.umami) {
+            umami.track('error_occurred', { message: error.message });
+        }
     } finally {
         loadingOverlay.style.display = 'none';
         analyzeBtn.disabled = false;
