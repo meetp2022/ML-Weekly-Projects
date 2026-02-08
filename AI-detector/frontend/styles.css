@@ -587,7 +587,8 @@ svg defs {
     font-size: 1.1rem;
 }
 
-.legal-content p, .legal-content ul {
+.legal-content p,
+.legal-content ul {
     margin-bottom: var(--spacing-md);
     color: var(--text-secondary);
 }
@@ -623,7 +624,8 @@ svg defs {
 /* Cookie Consent Banner */
 .cookie-banner {
     position: fixed;
-    bottom: -200px; /* Hidden by default */
+    bottom: -200px;
+    /* Hidden by default */
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
@@ -693,6 +695,57 @@ svg defs {
         flex-direction: column;
         text-align: center;
         gap: var(--spacing-md);
+    }
+}
+
+/* Homepage Content & Trust Boosters */
+.micro-description {
+    text-align: center;
+    max-width: 800px;
+    margin: -1rem auto 2rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.trust-boosters {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.trust-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.trust-item span:first-child {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 600px) {
+    .micro-description {
+        font-size: 1rem;
+        padding: 0 var(--spacing-sm);
+    }
+
+    .trust-boosters {
+        gap: var(--spacing-sm);
     }
 }
 
