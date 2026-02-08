@@ -24,6 +24,8 @@ const burstinessValue = document.getElementById('burstinessValue');
 const burstinessBar = document.getElementById('burstinessBar');
 const repetitionValue = document.getElementById('repetitionValue');
 const repetitionBar = document.getElementById('repetitionBar');
+const varianceValue = document.getElementById('varianceValue');
+const varianceBar = document.getElementById('varianceBar');
 const highlightedText = document.getElementById('highlightedText');
 
 // Add SVG gradient for score ring
@@ -189,6 +191,10 @@ function displayResults(data) {
 
     repetitionValue.textContent = metrics.repetition.toFixed(3);
     repetitionBar.style.width = `${metrics.repetition_score}%`;
+
+    // Update variance
+    varianceValue.textContent = metrics.perplexity_variance.toFixed(2);
+    varianceBar.style.width = `${metrics.perplexity_variance_score}%`;
 
     // Update sentence highlighting
     displayHighlightedText(data.sentence_scores);

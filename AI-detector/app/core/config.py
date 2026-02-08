@@ -20,9 +20,10 @@ class Settings(BaseSettings):
     human_threshold: float = 30.0
     
     # Weights for final score (must sum to 1.0)
-    perplexity_weight: float = 0.5
-    burstiness_weight: float = 0.25
-    repetition_weight: float = 0.25
+    perplexity_weight: float = 0.4
+    burstiness_weight: float = 0.2
+    repetition_weight: float = 0.2
+    variance_weight: float = 0.2
     
     # API settings
     cors_origins: list = ["*"]

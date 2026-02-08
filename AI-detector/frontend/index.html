@@ -176,6 +176,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- New Metric: Perplexity Variance -->
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M13 17V7M9 13V11M17 19V5" stroke="white" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-header">
+                                <div class="metric-label">Variance</div>
+                                <div class="metric-info"
+                                    title="Fluctuation in perplexity. Human writing varies more; AI is more consistent.">
+                                    ⓘ
+                                </div>
+                            </div>
+                            <div class="metric-value" id="varianceValue">-</div>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" id="varianceBar"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Sentence Highlighting -->
@@ -183,12 +206,16 @@
                     <h3>Sentence-Level Analysis</h3>
                     <p class="highlight-legend">
                         <span class="legend-item">
-                            <span class="legend-color" style="background: rgba(102, 126, 234, 0.2);"></span>
-                            Low AI probability
+                            <span class="legend-color" style="background: rgba(16, 185, 129, 0.3);"></span>
+                            Human-like
                         </span>
                         <span class="legend-item">
-                            <span class="legend-color" style="background: rgba(245, 87, 108, 0.5);"></span>
-                            High AI probability
+                            <span class="legend-color" style="background: rgba(102, 126, 234, 0.4);"></span>
+                            Uncertain
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-color" style="background: rgba(239, 68, 68, 0.5);"></span>
+                            AI-like
                         </span>
                     </p>
                     <div class="highlighted-text" id="highlightedText"></div>

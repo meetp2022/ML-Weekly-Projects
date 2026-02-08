@@ -32,6 +32,8 @@ class Metrics(BaseModel):
     burstiness_score: float
     repetition: float
     repetition_score: float
+    perplexity_variance: float
+    perplexity_variance_score: float
 
 
 class AnalyzeResponse(BaseModel):

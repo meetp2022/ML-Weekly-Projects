@@ -102,3 +102,45 @@ def normalize_perplexity(perplexity: float, min_ppl: float = 5.0, max_ppl: float
     normalized = 100 * (1 - (perplexity - min_ppl) / (max_ppl - min_ppl))
     
     return float(normalized)
+
+
+def calculate_perplexity_variance(sentence_scores: List[Dict[str, any]]) -> float:
+    """Calculate the variation in perplexity across sentences.
+    
+    Human writing usually has higher variance (changes in tone/complexity).
+    AI writing usually has lower variance (very stable predictability).
+    
+    Args:
+        sentence_scores: List of dicts with 'perplexity' key
+        
+    Returns:
+        Variance (standard deviation) of perplexities
+    """
+    if len(sentence_scores) < 3:
+        return 0.0
+    
+    perplexities = [s['perplexity'] for s in sentence_scores]
+    
+    # Calculate standard deviation
+    std_dev = np.std(perplexities)
+    
+    logger.debug(f"Perplexity variance (std_dev): {std_dev:.2f}")
+    
+    return float(std_dev)
+
+
+def normalize_variance(variance: float, threshold: float = 15.0) -> float:
+    """Normalize perplexity variance to 0-100 score.
+    
+    Args:
+        variance: Raw variance value
+        threshold: Variance value above which text is likely human
+        
+    Returns:
+        Normalized score (0-100, higher = more AI-like)
+    """
+    # Invert: lower variance = higher AI score
+    # We clip the variance to the threshold and scale
+    normalized = 100 * (1 - min(variance / threshold, 1.0))
+    
+    return float(normalized)

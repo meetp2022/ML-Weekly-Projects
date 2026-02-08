@@ -7,7 +7,9 @@ from app.core.logging import get_logger
 from app.services.perplexity import (
     calculate_perplexity,
     calculate_sentence_perplexities,
-    normalize_perplexity
+    normalize_perplexity,
+    calculate_perplexity_variance,
+    normalize_variance
 )
 from app.services.burstiness import calculate_burstiness, normalize_burstiness
 from app.services.repetition import calculate_repetition_score, normalize_repetition
@@ -30,16 +32,22 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     burstiness = calculate_burstiness(sentences)
     repetition = calculate_repetition_score(text)
     
+    # Calculate sentence-level perplexities for variance
+    sentence_scores = calculate_sentence_perplexities(sentences)
+    variance = calculate_perplexity_variance(sentence_scores)
+    
     # Normalize to 0-100 scale
     perplexity_score = normalize_perplexity(perplexity)
     burstiness_score = normalize_burstiness(burstiness)
     repetition_score = normalize_repetition(repetition)
+    variance_score = normalize_variance(variance)
     
     # Weighted combination
     final_score = (
         perplexity_score * settings.perplexity_weight +
         burstiness_score * settings.burstiness_weight +
-        repetition_score * settings.repetition_weight
+        repetition_score * settings.repetition_weight +
+        variance_score * settings.variance_weight
     )
     
     # Determine label and confidence
@@ -55,7 +63,7 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     
     logger.info(
         f"Final score: {final_score:.2f} ({label}, {confidence} confidence) - "
-        f"PPL={perplexity_score:.1f}, Burst={burstiness_score:.1f}, Rep={repetition_score:.1f}"
+        f"PPL={perplexity_score:.1f}, Burst={burstiness_score:.1f}, Rep={repetition_score:.1f}, Var={variance_score:.1f}"
     )
     
     return {
@@ -68,7 +76,9 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
             'burstiness': round(burstiness, 3),
             'burstiness_score': round(burstiness_score, 2),
             'repetition': round(repetition, 3),
-            'repetition_score': round(repetition_score, 2)
+            'repetition_score': round(repetition_score, 2),
+            'perplexity_variance': round(variance, 2),
+            'perplexity_variance_score': round(variance_score, 2)
         }
     }
 
