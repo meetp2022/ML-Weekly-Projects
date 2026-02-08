@@ -22,7 +22,7 @@ def calculate_perplexity(text: str) -> float:
     model, tokenizer = gpt2_loader.load()
     
     # Tokenize
-    encodings = tokenizer(text, return_tensors='pt', truncation=True, max_length=settings.max_length)
+    encodings = tokenizer(text, return_tensors='pt', truncation=True, max_length=settings.max_token_length)
     
     # Move to device
     device = torch.device(settings.device)

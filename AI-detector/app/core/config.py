@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     
     # Model settings
     model_name: str = "distilgpt2"
-    max_length: int = 5000
+    max_token_length: int = 1024
     device: str = "cpu"  # Use "cuda" if GPU available
     
     # Scoring thresholds
