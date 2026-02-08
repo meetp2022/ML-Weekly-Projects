@@ -1,4 +1,4 @@
-// API Configuration (Apex Domain Trigger: aichecking.me)
+// API Configuration (Compliance Deploy Trigger: privacy/terms/cookies)
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? ''
     : 'https://api.aichecking.me'; // Custom Domain Backend
