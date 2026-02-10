@@ -40,6 +40,28 @@ gradient.innerHTML = `
 defs.appendChild(gradient);
 svg.appendChild(defs);
 
+// Theme & Logo handling
+const siteLogo = document.getElementById('siteLogo');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+const LOGO_VERSION = '1.0.2'; // Force cache refresh for PNG migration
+
+function updateLogo(isDark) {
+    if (siteLogo) {
+        // Default to dark logo (light text) because the site background is dark
+        // logo-dark.png = Logo for Dark Backgrounds (White/Light text)
+        // logo-light.png = Logo for Light Backgrounds (Dark text)
+        const logoSrc = isDark ? `assets/logo-dark.png?v=${LOGO_VERSION}` : `assets/logo-light.png?v=${LOGO_VERSION}`;
+        siteLogo.src = logoSrc;
+        console.log('Logo source updated:', logoSrc);
+    }
+}
+
+// Initialize logo based on current preference
+updateLogo(prefersDark.matches);
+
+// Listen for theme changes (Site is always dark, but we keep this for potential future light theme toggle)
+prefersDark.addEventListener('change', (e) => updateLogo(e.matches));
+
 // Event Listeners
 textInput.addEventListener('input', updateCharCount);
 analyzeBtn.addEventListener('click', analyzeText);

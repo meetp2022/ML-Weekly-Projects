@@ -19,18 +19,7 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="32" height="32" rx="8" fill="url(#gradient)" />
-                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white" opacity="0.9" />
-                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.6" />
-                    <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
-                            <stop offset="0%" stop-color="#667eea" />
-                            <stop offset="100%" stop-color="#764ba2" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <h1>AIChecking</h1>
+                <img src="assets/logo-dark.png?v=1.0.2" alt="AIChecking Logo" id="siteLogo" height="40">
             </div>
             <a href="index.html" class="btn-cookie-learn">Home</a>
         </header>
@@ -45,46 +34,58 @@
             </a>
 
             <h1>Terms of Service</h1>
-            <span class="last-updated">Last updated: February 2026</span>
+            <p class="last-updated">Last Updated: February 2026</p>
 
-            <p>By accessing or using AIChecking.me, you agree to the following terms and conditions.</p>
+            <section>
+                <h2>1. Acceptance of Terms</h2>
+                <p>By accessing and using AIChecking.me, you agree to comply with and be bound by these Terms of
+                    Service.
+                    If you do not agree to these terms, please do not use our service.</p>
+            </section>
 
-            <h2>1. Service Description</h2>
-            <p>AIChecking.me provides an AI-generated text detection tool. Results are probabilistic estimates based on
-                statistical analysis and should not be treated as definitive judgments.</p>
+            <section>
+                <h2>2. Use of Service</h2>
+                <p>AIChecking.me provide probabilistic analysis of text to estimate the likelihood of AI generation. Our
+                    results are estimates and should not be used as definitive proof of authorship.</p>
+            </section>
 
-            <h2>2. No Guarantees</h2>
-            <p>We do not guarantee the accuracy of any analysis. Results should not be used as sole evidence for
-                academic, legal, or disciplinary decisions. We provide the service "as is" without warranties of any
-                kind.</p>
+            <section>
+                <h2>3. Disclaimer of Warranties</h2>
+                <p>The service is provided "as is" and "as available". We do not warrant that the results are 100%
+                    accurate or that the service will be uninterrupted or error-free.</p>
+            </section>
 
-            <h2>3. User Responsibility</h2>
-            <p>You agree to use the service responsibly and ethically. You shall not misuse the service, attempt to
-                bypass its limitations, or submit illegal or harmful content.</p>
+            <section>
+                <h2>4. Limitation of Liability</h2>
+                <p>AIChecking.me and its operators shall not be liable for any damages arising out of the use or
+                    inability
+                    to use the service.</p>
+            </section>
 
-            <h2>4. Intellectual Property</h2>
-            <p>All website content, design, and functionality belong to AIChecking.me unless otherwise stated. You may
-                not reproduce or redistribute any part of the service without permission.</p>
-
-            <h2>5. Limitation of Liability</h2>
-            <p>We are not liable for incorrect results, decisions made based on the tool’s output, or any direct or
-                indirect damages arising from the use of the service.</p>
-
-            <h2>6. Modifications</h2>
-            <p>We reserve the right to modify or discontinue the service at any time without notice.</p>
-
-            <h2>7. Governing Law</h2>
-            <p>These terms are governed by applicable laws. Any disputes shall be resolved through the appropriate legal
-                channels.</p>
+            <section>
+                <h2>5. Changes to Terms</h2>
+                <p>We reserve the right to modify these terms at any time. Your continued use of the service constitutes
+                    acceptance of the new terms.</p>
+            </section>
         </main>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>AIChecking.me • <a href="how-ai-detection-works.html">How it works</a> • <a href="about.html">About</a> •
-                <a href="privacy.html">Privacy Policy</a> • <a
+            <p>AIChecking.me • <a href="how-ai-detection-works.html">How it works</a> • <a href="privacy.html">Privacy
+                    Policy</a> • <a href="terms.html">Terms of Service</a> • <a
                     href="mailto:contact@aichecking.me">contact@aichecking.me</a></p>
         </footer>
     </div>
+
+    <script>
+        const siteLogo = document.getElementById('siteLogo');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        function updateLogo(isDark) {
+            if (siteLogo) siteLogo.src = isDark ? 'assets/logo-dark.png?v=1.0.2' : 'assets/logo-light.svg?v=1.0.1';
+        }
+        updateLogo(prefersDark.matches);
+        prefersDark.addEventListener('change', (e) => updateLogo(e.matches));
+    </script>
 </body>
 
 </html>

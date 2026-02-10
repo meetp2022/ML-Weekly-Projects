@@ -19,18 +19,7 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="32" height="32" rx="8" fill="url(#gradient)" />
-                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white" opacity="0.9" />
-                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.6" />
-                    <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
-                            <stop offset="0%" stop-color="#667eea" />
-                            <stop offset="100%" stop-color="#764ba2" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <h1>AIChecking</h1>
+                <img src="assets/logo-dark.png?v=1.0.2" alt="AIChecking Logo" id="siteLogo" height="40">
             </div>
             <a href="index.html" class="btn-cookie-learn">Home</a>
         </header>
@@ -63,6 +52,16 @@
                     href="mailto:contact@aichecking.me">contact@aichecking.me</a></p>
         </footer>
     </div>
+
+    <script>
+        const siteLogo = document.getElementById('siteLogo');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        function updateLogo(isDark) {
+            if (siteLogo) siteLogo.src = isDark ? 'assets/logo-dark.png?v=1.0.2' : 'assets/logo-light.svg?v=1.0.1';
+        }
+        updateLogo(prefersDark.matches);
+        prefersDark.addEventListener('change', (e) => updateLogo(e.matches));
+    </script>
 </body>
 
 </html>

@@ -19,18 +19,7 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="32" height="32" rx="8" fill="url(#gradient)" />
-                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white" opacity="0.9" />
-                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.6" />
-                    <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
-                            <stop offset="0%" stop-color="#667eea" />
-                            <stop offset="100%" stop-color="#764ba2" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <h1>AIChecking</h1>
+                <img src="assets/logo-dark.png?v=1.0.2" alt="AIChecking Logo" id="siteLogo" height="40">
             </div>
             <a href="index.html" class="btn-cookie-learn">Home</a>
         </header>
@@ -45,49 +34,56 @@
             </a>
 
             <h1>Privacy Policy</h1>
-            <span class="last-updated">Last updated: February 2026</span>
+            <p class="last-updated">Last Updated: February 2026</p>
 
-            <p>AIChecking.me (“we”, “our”, “us”) respects your privacy and is committed to being transparent about how
-                we process data.</p>
+            <section>
+                <h2>1. Introduction</h2>
+                <p>Welcome to AIChecking.me. We respect your privacy and are committed to protecting any information
+                    that
+                    may be processed through our platform. This policy outlines our practices regarding data collection
+                    and use.</p>
+            </section>
 
-            <h2>1. Information We Collect</h2>
-            <p><strong>We do not store or save the text you submit for AI detection.</strong> Analysis is performed
-                on-the-fly, and content is discarded immediately after processing.</p>
-            <ul>
-                <li>Basic, anonymous usage data (e.g., page views, browser type) via Umami Analytics. Umami is
-                    privacy-focused and does not use cookies or collect personal data.</li>
-                <li>Third-party cookies (if ads are displayed) to show relevant content.</li>
-            </ul>
+            <section>
+                <h2>2. Data Collection & Usage</h2>
+                <p><strong>Text Submissions:</strong> Any text you submit for analysis is processed temporarily in our
+                    backend to provide the detection results. This text is not stored, saved, or used to train any
+                    models.</p>
+                <p><strong>Cookies & Analytics:</strong> We use Umami Analytics for basic, anonymous tracking (such as
+                    page views and feature usage) to improve our service. No personal identifying information is stored
+                    or sold.</p>
+            </section>
 
-            <h2>2. Text Analysis</h2>
-            <p>Text entered into the tool is processed temporarily for analysis only. Submitted content is not logged,
-                stored, or reused for training or any other purpose.</p>
+            <section>
+                <h2>3. Security</h2>
+                <p>We implement industry-standard security measures to ensure that your data remains safe during
+                    transmission. However, no method of transmission over the internet is 100% secure.</p>
+            </section>
 
-            <h2>3. Cookies and Advertising</h2>
-            <p>We may use third-party advertising services such as Google AdSense. These services use cookies to deliver
-                personalized advertising based on your visits to this and other websites.</p>
-            <p>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads"
-                    target="_blank">Google’s Ads Settings</a>.</p>
-
-            <h2>4. Third-Party Services</h2>
-            <p>We use Umami Analytics for anonymous site metrics and may use third-party tools for advertising delivery.
-                These providers operate under their own privacy policies.</p>
-
-            <h2>5. Your Consent</h2>
-            <p>By using this website, you consent to this Privacy Policy.</p>
-
-            <h2>6. Contact</h2>
-            <p>If you have questions about this policy, please contact us at <a
-                    href="mailto:contact@aichecking.me">contact@aichecking.me</a>.</p>
+            <section>
+                <h2>4. Contact Us</h2>
+                <p>If you have any questions about this Privacy Policy, please contact us at <a
+                        href="mailto:contact@aichecking.me">contact@aichecking.me</a>.</p>
+            </section>
         </main>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>AIChecking.me • <a href="how-ai-detection-works.html">How it works</a> • <a href="about.html">About</a> •
-                <a href="terms.html">Terms of Service</a> • <a
+            <p>AIChecking.me • <a href="how-ai-detection-works.html">How it works</a> • <a href="privacy.html">Privacy
+                    Policy</a> • <a href="terms.html">Terms of Service</a> • <a
                     href="mailto:contact@aichecking.me">contact@aichecking.me</a></p>
         </footer>
     </div>
+
+    <script>
+        const siteLogo = document.getElementById('siteLogo');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        function updateLogo(isDark) {
+            if (siteLogo) siteLogo.src = isDark ? 'assets/logo-dark.png?v=1.0.2' : 'assets/logo-light.svg?v=1.0.1';
+        }
+        updateLogo(prefersDark.matches);
+        prefersDark.addEventListener('change', (e) => updateLogo(e.matches));
+    </script>
 </body>
 
 </html>
