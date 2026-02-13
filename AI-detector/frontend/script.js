@@ -134,12 +134,18 @@ function displayResults(data) {
 
     // Add user-friendly explanations
     const riskVal = Math.round(score);
-    if (riskVal >= 70) {
+    if (riskVal >= 65) {
         scoreExplanation.textContent = 'High probability of synthetic patterns. The writing style matches known AI generation models.';
-    } else if (riskVal <= 30) {
-        scoreExplanation.textContent = 'Low probability of synthetic patterns. The writing exhibits high structural variation typical of human composition.';
+    } else if (riskVal <= 35) {
+        scoreExplanation.textContent = 'Likely human writing. The text exhibits natural structural variation and lexical diversity.';
     } else {
         scoreExplanation.textContent = 'Mixed structural signals detected. The text contains both machine-like consistency and human-like variation.';
+    }
+
+    // Handle reliability warning
+    const shortTextWarning = document.getElementById('shortTextWarning');
+    if (shortTextWarning) {
+        shortTextWarning.style.display = data.is_reliable ? 'none' : 'block';
     }
 
     // Add confidence explanations
@@ -158,14 +164,14 @@ function displayResults(data) {
 
     // Update score color based on value
     const scoreGradient = document.getElementById('scoreGradient');
-    if (score >= 70) {
+    if (score >= 65) {
         // High AI probability - red gradient
         scoreGradient.innerHTML = `
             <stop offset="0%" stop-color="#ef4444"/>
             <stop offset="100%" stop-color="#dc2626"/>
         `;
         scoreLabel.style.color = '#ef4444';
-    } else if (score <= 30) {
+    } else if (score <= 35) {
         // Low AI probability - green gradient
         scoreGradient.innerHTML = `
             <stop offset="0%" stop-color="#10b981"/>
@@ -214,24 +220,24 @@ function displayHighlightedText(sentenceScores) {
         const score = item.score;
         let backgroundColor;
 
-        if (score >= 70) {
+        if (score >= 65) {
             // High AI probability - red
-            const intensity = Math.min((score - 70) / 30, 1);
+            const intensity = Math.min((score - 65) / 35, 1);
             backgroundColor = `rgba(239, 68, 68, ${0.2 + intensity * 0.5})`;
-        } else if (score <= 30) {
-            // Low AI probability - green
-            const intensity = Math.min((30 - score) / 30, 1);
+        } else if (score <= 35) {
+            // Likely human - green
+            const intensity = Math.min((35 - score) / 35, 1);
             backgroundColor = `rgba(16, 185, 129, ${0.1 + intensity * 0.3})`;
         } else {
-            // Uncertain - blue
-            backgroundColor = `rgba(102, 126, 234, ${0.1 + (score - 30) / 80})`;
+            // Mixed - blue
+            backgroundColor = `rgba(102, 126, 234, ${0.1 + (score - 35) / 65})`;
         }
 
         span.style.backgroundColor = backgroundColor;
-        
+
         // Detailed hover info
-        const riskType = score >= 70 ? 'High' : (score <= 30 ? 'Low' : 'Moderate');
-        span.title = `AI Writing Risk: ${score.toFixed(1)}% (${riskType})\nThis segment matches statistical patterns common in ${riskType === 'High' ? 'AI models' : (riskType === 'Low' ? 'human writing' : 'mixed composition')}.`;
+        const riskType = score >= 65 ? 'High' : (score <= 35 ? 'Likely Human' : 'Mixed');
+        span.title = `AI Writing Risk: ${score.toFixed(1)}% (${riskType})\nThis segment matches statistical patterns common in ${riskType === 'High' ? 'AI models' : (riskType === 'Likely Human' ? 'human writing' : 'mixed composition')}.`;
 
         highlightedText.appendChild(span);
     });

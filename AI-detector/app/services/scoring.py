@@ -9,10 +9,12 @@ from app.services.perplexity import (
     calculate_sentence_perplexities,
     normalize_perplexity,
     calculate_perplexity_variance,
-    normalize_variance
+    normalize_variance,
+    calculate_perplexity_distribution
 )
 from app.services.burstiness import calculate_burstiness, normalize_burstiness
 from app.services.repetition import calculate_repetition_score, normalize_repetition
+from app.services.preprocessing import extract_stylometric_features
 
 logger = get_logger(__name__)
 
@@ -32,9 +34,13 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     burstiness = calculate_burstiness(sentences)
     repetition = calculate_repetition_score(text)
     
-    # Calculate sentence-level perplexities for variance
+    # Calculate sentence-level perplexities and distribution
     sentence_scores = calculate_sentence_perplexities(sentences)
-    variance = calculate_perplexity_variance(sentence_scores)
+    dist_metrics = calculate_perplexity_distribution(sentence_scores)
+    variance = dist_metrics['std']
+    
+    # Stylometric markers
+    sty_metrics = extract_stylometric_features(text, sentences)
     
     # Normalize to 0-100 scale
     perplexity_score = normalize_perplexity(perplexity)
@@ -42,34 +48,53 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     repetition_score = normalize_repetition(repetition)
     variance_score = normalize_variance(variance)
     
-    # Weighted combination
+    # New Scientific Scores (Inverted for AI risk)
+    # Human text has HIGH CV and HIGH Skew (long tails of complex words)
+    cv_score = 100 * (1 - min(dist_metrics['cv'] / 1.5, 1.0))
+    skew_score = 100 * (1 - min(max(dist_metrics['skew'], 0) / 4.0, 1.0))
+    
+    # Stylometric Scores
+    # Human text has HIGH sentence length variance and HIGH lexical diversity
+    sty_var_score = 100 * (1 - min(sty_metrics['sentence_length_var'] / 150, 1.0))
+    lex_score = 100 * (1 - min(sty_metrics['lexical_diversity'] * 1.5, 1.0))
+    
+    # Weighted combination (Adjusted for scientific depth)
     final_score = (
-        perplexity_score * settings.perplexity_weight +
-        burstiness_score * settings.burstiness_weight +
-        repetition_score * settings.repetition_weight +
-        variance_score * settings.variance_weight
+        perplexity_score * 0.35 +
+        burstiness_score * 0.15 +
+        repetition_score * 0.10 +
+        variance_score * 0.10 +
+        cv_score * 0.10 +
+        skew_score * 0.10 +
+        sty_var_score * 0.05 +
+        lex_score * 0.05
     )
     
-    # Determine label and confidence
-    if final_score >= settings.ai_threshold:
+    # Refined Thresholds (0-35 Human | 35-65 Mixed | 65-100 AI)
+    if final_score >= 65:
         label = "AI-generated"
         confidence = "high" if final_score >= 85 else "medium"
-    elif final_score <= settings.human_threshold:
+    elif final_score <= 35:
         label = "Human-written"
         confidence = "high" if final_score <= 15 else "medium"
     else:
         label = "Uncertain"
         confidence = "low"
     
+    # Reliability check (Word count < 150)
+    word_count = len(text.split())
+    is_reliable = word_count >= 150
+    
     logger.info(
-        f"Final score: {final_score:.2f} ({label}, {confidence} confidence) - "
-        f"PPL={perplexity_score:.1f}, Burst={burstiness_score:.1f}, Rep={repetition_score:.1f}, Var={variance_score:.1f}"
+        f"Final score: {final_score:.2f} ({label}) - Reliable: {is_reliable} - "
+        f"PPL={perplexity_score:.1f}, Burst={burstiness_score:.1f}, CV={cv_score:.1f}, Skew={skew_score:.1f}"
     )
     
     return {
         'score': round(final_score, 2),
         'label': label,
         'confidence': confidence,
+        'is_reliable': is_reliable,
         'metrics': {
             'perplexity': round(perplexity, 2),
             'perplexity_score': round(perplexity_score, 2),
@@ -78,7 +103,9 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
             'repetition': round(repetition, 3),
             'repetition_score': round(repetition_score, 2),
             'perplexity_variance': round(variance, 4),
-            'perplexity_variance_score': round(variance_score, 2)
+            'perplexity_variance_score': round(variance_score, 2),
+            'cv_score': round(cv_score, 2),
+            'skew_score': round(skew_score, 2)
         }
     }
 

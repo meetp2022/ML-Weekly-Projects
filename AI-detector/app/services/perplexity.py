@@ -2,6 +2,7 @@
 from typing import List, Dict
 import torch
 import numpy as np
+from scipy.stats import skew
 
 from app.models.gpt2_loader import gpt2_loader
 from app.core.config import settings
@@ -36,7 +37,14 @@ def calculate_perplexity(text: str) -> float:
     # Perplexity = exp(loss)
     perplexity = torch.exp(loss).item()
     
-    logger.debug(f"Document perplexity: {perplexity:.2f}")
+    # Normalize by log-length scaling to stabilize results across sizes
+    # Humans tend to get more creative in longer texts, whereas AI stays predictable.
+    word_count = len(text.split())
+    if word_count > 0:
+        length_penalty = np.log10(max(word_count, 10)) / 2.0
+        perplexity = perplexity * length_penalty
+    
+    logger.debug(f"Document perplexity (normalized): {perplexity:.2f}")
     
     return perplexity
 
@@ -130,17 +138,27 @@ def calculate_perplexity_variance(sentence_scores: List[Dict[str, any]]) -> floa
 
 
 def normalize_variance(variance: float, threshold: float = 15.0) -> float:
-    """Normalize perplexity variance to 0-100 score.
-    
-    Args:
-        variance: Raw variance value
-        threshold: Variance value above which text is likely human
-        
-    Returns:
-        Normalized score (0-100, higher = more AI-like)
-    """
-    # Invert: lower variance = higher AI score
-    # We clip the variance to the threshold and scale
+    """Normalize perplexity variance to 0-100 score."""
     normalized = 100 * (1 - min(variance / threshold, 1.0))
-    
     return float(normalized)
+
+
+def calculate_perplexity_distribution(sentence_scores: List[Dict[str, any]]) -> Dict[str, float]:
+    """Calculate advanced distribution metrics for sentence perplexities."""
+    if not sentence_scores:
+        return {'std': 0.0, 'cv': 0.0, 'skew': 0.0}
+    
+    ppls = [s['perplexity'] for s in sentence_scores]
+    mean = np.mean(ppls)
+    std = np.std(ppls)
+    cv = std / mean if mean > 0 else 0
+    
+    # Skewness: AI writing is usually very symmetric (predictable), 
+    # human writing has long tails of high perplexing words.
+    text_skew = skew(ppls) if len(ppls) > 2 else 0.0
+    
+    return {
+        'std': float(std),
+        'cv': float(cv),
+        'skew': float(text_skew)
+    }
