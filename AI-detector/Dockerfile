@@ -18,6 +18,10 @@ RUN pip install --no-cache-dir torch==2.1.1 --index-url https://download.pytorch
 # Download NLTK data
 RUN python -c "import nltk; nltk.download('punkt')"
 
+# Pre-download DistilGPT-2 and RoBERTa Detector to cache in image layers
+RUN python -c "from transformers import GPT2LMHeadModel, GPT2Tokenizer; GPT2Tokenizer.from_pretrained('distilgpt2'); GPT2LMHeadModel.from_pretrained('distilgpt2')"
+RUN python -c "from transformers import RobertaForSequenceClassification, RobertaTokenizer; RobertaTokenizer.from_pretrained('roberta-base-openai-detector'); RobertaForSequenceClassification.from_pretrained('roberta-base-openai-detector')"
+
 # Copy application code
 COPY . .
 

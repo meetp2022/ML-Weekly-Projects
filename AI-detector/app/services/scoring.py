@@ -15,6 +15,8 @@ from app.services.perplexity import (
 from app.services.burstiness import calculate_burstiness, normalize_burstiness
 from app.services.repetition import calculate_repetition_score, normalize_repetition
 from app.services.preprocessing import extract_stylometric_features
+from app.models.detector_loader import detector_loader
+import torch
 
 logger = get_logger(__name__)
 
@@ -42,6 +44,23 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     # Stylometric markers
     sty_metrics = extract_stylometric_features(text, sentences)
     
+    # CALCULATE CLASSIFIER SCORE (AI Fingerprints)
+    # Using the specialized RoBERTa detector
+    model, tokenizer = detector_loader.load()
+    device = torch.device(settings.device)
+    
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
+    inputs = {k: v.to(device) for k, v in inputs.items()}
+    
+    with torch.no_grad():
+        outputs = model(**inputs)
+        probs = torch.softmax(outputs.logits, dim=-1)
+        # roberta-base-openai-detector labels: [Fake, Real]
+        # We want the 'Fake' (AI) probability
+        classifier_ai_prob = probs[0][0].item() * 100
+    
+    logger.debug(f"Classifier AI Probability: {classifier_ai_prob:.2f}%")
+    
     # Normalize to 0-100 scale
     perplexity_score = normalize_perplexity(perplexity)
     burstiness_score = normalize_burstiness(burstiness)
@@ -58,23 +77,23 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     sty_var_score = 100 * (1 - min(sty_metrics['sentence_length_var'] / 150, 1.0))
     lex_score = 100 * (1 - min(sty_metrics['lexical_diversity'] * 1.5, 1.0))
     
-    # Weighted combination (Balanced to avoid False Positives)
-    # Reducing Perplexity weight slightly and increasing Stylometrics/Variety
-    final_score = (
-        perplexity_score * 0.30 +
+    # Weighted combination (Ensemble: Hybrid AI Detection)
+    # We give 60% weight to the specialized classifier and 40% to scientific metrics
+    statistical_score = (
+        perplexity_score * 0.40 +
         burstiness_score * 0.20 +
         repetition_score * 0.10 +
         variance_score * 0.15 +
         cv_score * 0.10 +
-        skew_score * 0.05 +
-        sty_var_score * 0.05 +
-        lex_score * 0.05
+        skew_score * 0.05
     )
     
-    # Apply "Structural Variety" credit
-    # If a text has high variance or burstiness, it's very likely human regardless of perplexity.
+    # Final Hybrid Score
+    final_score = (classifier_ai_prob * 0.60) + (statistical_score * 0.40)
+    
+    # Apply "Structural Variety" credit to the statistical part
     if variance > 20 or burstiness > 0.4:
-        final_score *= 0.8  # 20% Reduction in AI probability for high-variety writers
+        final_score *= 0.85  # Refined 15% reduction for high-variety writers
     
     # Refined Thresholds (0-35 Human | 35-65 Mixed | 65-100 AI)
     if final_score >= 65:

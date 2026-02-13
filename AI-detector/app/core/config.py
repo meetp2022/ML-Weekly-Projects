@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     
     # Model settings
     model_name: str = "distilgpt2"
+    classifier_model_name: str = "roberta-base-openai-detector"
     max_token_length: int = 1024
     device: str = "cpu"  # Use "cuda" if GPU available
     
