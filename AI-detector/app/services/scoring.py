@@ -77,13 +77,13 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     sty_var_score = 100 * (1 - min(sty_metrics['sentence_length_var'] / 150, 1.0))
     lex_score = 100 * (1 - min(sty_metrics['lexical_diversity'] * 1.5, 1.0))
     
-    # Weighted combination (Ensemble: Hybrid AI Detection)
-    # We give 60% weight to the specialized classifier and 40% to scientific metrics
+    # Weighted combination (Scientific Ensemble v2)
+    # Increasing repetition weight and stabilizing statistical influence
     statistical_score = (
         perplexity_score * 0.40 +
-        burstiness_score * 0.20 +
-        repetition_score * 0.10 +
-        variance_score * 0.15 +
+        burstiness_score * 0.15 +
+        repetition_score * 0.20 +
+        variance_score * 0.10 +
         cv_score * 0.10 +
         skew_score * 0.05
     )
@@ -91,9 +91,16 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     # Final Hybrid Score
     final_score = (classifier_ai_prob * 0.60) + (statistical_score * 0.40)
     
-    # Apply "Structural Variety" credit to the statistical part
-    if variance > 20 or burstiness > 0.4:
-        final_score *= 0.85  # Refined 15% reduction for high-variety writers
+    # NEW: Statistical Floor (Prevents total false negatives)
+    # If the math screams AI (PPL > 90 or Repetition > 70), 
+    # don't let the classifier pull it below "Uncertain" (40%)
+    if (perplexity_score > 90 or repetition_score > 70) and final_score < 40:
+        logger.info("Statistical Floor triggered: Overriding classifier human bias")
+        final_score = 40.0 + (final_score * 0.2) # Soft floor at 40%+
+    
+    # Apply "Structural Variety" credit ONLY ifRoBERTa isn't highly suspicious
+    if (variance > 20 or burstiness > 0.4) and classifier_ai_prob < 65:
+        final_score *= 0.85
     
     # Refined Thresholds (0-35 Human | 35-65 Mixed | 65-100 AI)
     if final_score >= 65:
@@ -135,11 +142,12 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     }
 
 
-def calculate_sentence_scores(sentences: List[str]) -> List[Dict[str, any]]:
-    """Calculate AI scores for individual sentences.
+def calculate_sentence_scores(sentences: List[str], global_risk: float) -> List[Dict[str, any]]:
+    """Calculate AI scores for individual sentences, synchronized with global results.
     
     Args:
         sentences: List of sentences
+        global_risk: The overall document AI score
         
     Returns:
         List of dicts with sentence text and AI score
@@ -148,12 +156,14 @@ def calculate_sentence_scores(sentences: List[str]) -> List[Dict[str, any]]:
     
     results = []
     for item in sentence_perplexities:
-        # Normalize perplexity to score
-        score = normalize_perplexity(item['perplexity'])
+        # Blended Logic: 70% Sentence local predictability, 30% Global Signal
+        # This ensures red highlights in a green document are rare but accurate.
+        local_score = normalize_perplexity(item['perplexity'])
+        blended_score = (local_score * 0.7) + (global_risk * 0.3)
         
         results.append({
             'text': item['text'],
-            'score': round(score, 2)
+            'score': round(blended_score, 2)
         })
     
     return results

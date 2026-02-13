@@ -34,7 +34,7 @@ async def analyze_text(request: AnalyzeRequest) -> AnalyzeResponse:
         
         # Calculate scores
         result = calculate_final_score(cleaned_text, sentences)
-        sentence_scores = calculate_sentence_scores(sentences)
+        sentence_scores = calculate_sentence_scores(sentences, result['score'])
         
         # Build response
         response = AnalyzeResponse(
