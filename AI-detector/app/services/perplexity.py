@@ -37,14 +37,20 @@ def calculate_perplexity(text: str) -> float:
     # Perplexity = exp(loss)
     perplexity = torch.exp(loss).item()
     
-    # Normalize by log-length scaling to stabilize results across sizes
-    # Humans tend to get more creative in longer texts, whereas AI stays predictable.
+    # NEW: Length Protection Logic
+    # For very short texts (under 150 words), predictability is NOT a bug, it's a feature of simple English.
+    # We apply a "Benefit of the Doubt" multiplier that RAISES perplexity for short samples.
     word_count = len(text.split())
-    if word_count > 0:
-        length_penalty = np.log10(max(word_count, 10)) / 2.0
+    if word_count < 150:
+        # Scale up: a 10-word text gets a ~2x boost to perplexity to avoid false positives
+        protection_factor = 2.0 - min(word_count / 150.0, 1.0)
+        perplexity = perplexity * protection_factor
+    elif word_count > 500:
+        # For long texts, we apply a mild creative penalty (AI stays too predictable over time)
+        length_penalty = np.log10(word_count) / 2.5
         perplexity = perplexity * length_penalty
     
-    logger.debug(f"Document perplexity (normalized): {perplexity:.2f}")
+    logger.debug(f"Document perplexity (calibrated): {perplexity:.2f}")
     
     return perplexity
 
@@ -92,16 +98,11 @@ def calculate_sentence_perplexities(sentences: List[str]) -> List[Dict[str, any]
     return results
 
 
-def normalize_perplexity(perplexity: float, min_ppl: float = 5.0, max_ppl: float = 100.0) -> float:
-    """Normalize perplexity to 0-100 scale (inverted: lower perplexity = higher score).
+def normalize_perplexity(perplexity: float, min_ppl: float = 10.0, max_ppl: float = 300.0) -> float:
+    """Normalize perplexity with calibrated DistilGPT-2 ranges.
     
-    Args:
-        perplexity: Raw perplexity value
-        min_ppl: Minimum expected perplexity
-        max_ppl: Maximum expected perplexity
-        
-    Returns:
-        Normalized score (0-100, higher = more AI-like)
+    Min PPL 10: Typical for very simple AI or extremely simple repetitive human text.
+    Max PPL 300: Typical for complex human academic writing.
     """
     # Clamp to range
     perplexity = np.clip(perplexity, min_ppl, max_ppl)

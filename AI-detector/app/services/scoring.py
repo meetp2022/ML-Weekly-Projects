@@ -58,17 +58,23 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     sty_var_score = 100 * (1 - min(sty_metrics['sentence_length_var'] / 150, 1.0))
     lex_score = 100 * (1 - min(sty_metrics['lexical_diversity'] * 1.5, 1.0))
     
-    # Weighted combination (Adjusted for scientific depth)
+    # Weighted combination (Balanced to avoid False Positives)
+    # Reducing Perplexity weight slightly and increasing Stylometrics/Variety
     final_score = (
-        perplexity_score * 0.35 +
-        burstiness_score * 0.15 +
+        perplexity_score * 0.30 +
+        burstiness_score * 0.20 +
         repetition_score * 0.10 +
-        variance_score * 0.10 +
+        variance_score * 0.15 +
         cv_score * 0.10 +
-        skew_score * 0.10 +
+        skew_score * 0.05 +
         sty_var_score * 0.05 +
         lex_score * 0.05
     )
+    
+    # Apply "Structural Variety" credit
+    # If a text has high variance or burstiness, it's very likely human regardless of perplexity.
+    if variance > 20 or burstiness > 0.4:
+        final_score *= 0.8  # 20% Reduction in AI probability for high-variety writers
     
     # Refined Thresholds (0-35 Human | 35-65 Mixed | 65-100 AI)
     if final_score >= 65:
