@@ -42,6 +42,7 @@ async def analyze_text(request: AnalyzeRequest) -> AnalyzeResponse:
             label=result['label'],
             confidence=result['confidence'],
             metrics=result['metrics'],
+            is_reliable=result['is_reliable'],
             sentence_scores=sentence_scores
         )
         
