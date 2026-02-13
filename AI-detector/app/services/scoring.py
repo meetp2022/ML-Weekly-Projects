@@ -77,7 +77,7 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
             'burstiness_score': round(burstiness_score, 2),
             'repetition': round(repetition, 3),
             'repetition_score': round(repetition_score, 2),
-            'perplexity_variance': round(variance, 2),
+            'perplexity_variance': round(variance, 4),
             'perplexity_variance_score': round(variance_score, 2)
         }
     }

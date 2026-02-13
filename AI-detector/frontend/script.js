@@ -133,12 +133,13 @@ function displayResults(data) {
     scoreConfidence.textContent = `Confidence: ${data.confidence}`;
 
     // Add user-friendly explanations
-    if (data.label === 'AI-generated') {
-        scoreExplanation.textContent = 'This text appears to be written by AI. It shows patterns typical of machine-generated content.';
-    } else if (data.label === 'Human-written') {
-        scoreExplanation.textContent = 'This text appears to be written by a human. It shows natural writing patterns and variation.';
+    const riskVal = Math.round(score);
+    if (riskVal >= 70) {
+        scoreExplanation.textContent = 'High probability of synthetic patterns. The writing style matches known AI generation models.';
+    } else if (riskVal <= 30) {
+        scoreExplanation.textContent = 'Low probability of synthetic patterns. The writing exhibits high structural variation typical of human composition.';
     } else {
-        scoreExplanation.textContent = 'The results are inconclusive. The text has mixed characteristics of both AI and human writing.';
+        scoreExplanation.textContent = 'Mixed structural signals detected. The text contains both machine-like consistency and human-like variation.';
     }
 
     // Add confidence explanations
@@ -193,7 +194,7 @@ function displayResults(data) {
     repetitionBar.style.width = `${metrics.repetition_score}%`;
 
     // Update variance
-    varianceValue.textContent = metrics.perplexity_variance.toFixed(2);
+    varianceValue.textContent = metrics.perplexity_variance.toFixed(3);
     varianceBar.style.width = `${metrics.perplexity_variance_score}%`;
 
     // Update sentence highlighting
@@ -227,7 +228,10 @@ function displayHighlightedText(sentenceScores) {
         }
 
         span.style.backgroundColor = backgroundColor;
-        span.title = `AI Score: ${score.toFixed(1)}`;
+        
+        // Detailed hover info
+        const riskType = score >= 70 ? 'High' : (score <= 30 ? 'Low' : 'Moderate');
+        span.title = `AI Writing Risk: ${score.toFixed(1)}% (${riskType})\nThis segment matches statistical patterns common in ${riskType === 'High' ? 'AI models' : (riskType === 'Low' ? 'human writing' : 'mixed composition')}.`;
 
         highlightedText.appendChild(span);
     });
