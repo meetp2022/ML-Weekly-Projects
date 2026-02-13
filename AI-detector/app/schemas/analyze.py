@@ -34,6 +34,8 @@ class Metrics(BaseModel):
     repetition_score: float
     perplexity_variance: float
     perplexity_variance_score: float
+    cv_score: float
+    skew_score: float
 
 
 class AnalyzeResponse(BaseModel):
@@ -43,6 +45,7 @@ class AnalyzeResponse(BaseModel):
     label: str = Field(..., description="Classification label")
     confidence: str = Field(..., description="Confidence level")
     metrics: Metrics
+    is_reliable: bool
     sentence_scores: List[SentenceScore]
     
     class Config:

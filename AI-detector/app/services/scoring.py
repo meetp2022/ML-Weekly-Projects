@@ -87,9 +87,9 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
         label = "Uncertain"
         confidence = "low"
     
-    # Reliability check (Word count < 150)
-    word_count = len(text.split())
-    is_reliable = word_count >= 150
+    # Reliability check (Character count < 150)
+    # User requested character-based threshold: "It should not reflect if the character count exceeds 150"
+    is_reliable = len(text) >= 150
     
     logger.info(
         f"Final score: {final_score:.2f} ({label}) - Reliable: {is_reliable} - "
