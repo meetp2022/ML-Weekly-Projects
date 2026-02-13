@@ -61,3 +61,22 @@ Integrating classical NLP features—such as the frequency of stop words, use of
 
 ### 5. Semantic Consistency Analysis
 AI models occasionally "hallucinate" or lose the logical thread over long documents. Implementing a semantic graph to check if the text maintains logical consistency from beginning to end is a powerful way to flag AI content.
+
+---
+
+## 💰 Cost Optimization & Scaling Strategy
+
+Improving accuracy doesn't always require expensive enterprise GPUs. Here is the roadmap for cost-optimized growth:
+
+### 1. Free & Low-Cost Infrastructure
+- **Hugging Face Spaces**: Offers a robust, forever-free tier for CPU-based inference. Many of the "Large" models (GPT-2 Large, BERT) can run efficiently here without a dedicated GPU.
+- **Quantization (INT8/FP16)**: We can reduce the memory footprint of larger models by 50-70% using quantization. This allows us to run more powerful models (like Llama-3-3B) on standard 1GB-2GB RAM instances.
+
+### 2. Open-Source vs. Paid APIs
+- **Avoiding Token Costs**: Relying on local open-source models (Hugging Face) instead of OpenAI/Perplexity APIs ensures your monthly costs remain **fixed at $0** regardless of how many users analyze text.
+- **Small-but-Mighty Models**: Modern "Small Language Models" (SLMs) like **Microsoft Phi-3** or **Google Gemma-2B** offer performance comparable to much larger models but can be hosted on basic cloud servers for ~$5-10/month.
+
+### 3. Progressive Scaling
+- **Phase 1 ($0/mo)**: Stay on GitHub Pages + DigitalOcean Basic. Optimize the current `distilgpt2` with better preprocessing and stylometric rules.
+- **Phase 2 (~$12/mo)**: Upgrade to a 2GB RAM instance to host an ensemble of three small models (BERT + DistilGPT-2 + RoBERTa).
+- **Phase 3 (Variable)**: Only introduce GPU costs if you reach 10,000+ daily checks, as CPU inference is sufficient for lower traffic volumes.
