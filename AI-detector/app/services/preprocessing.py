@@ -1,7 +1,8 @@
 """Text preprocessing utilities."""
 import re
-from typing import List
+from typing import List, Dict, Tuple
 import nltk
+import numpy as np
 
 from app.core.logging import get_logger
 
@@ -44,7 +45,7 @@ def tokenize_sentences(text: str) -> List[str]:
     return sentences
 
 
-def preprocess_text(text: str) -> tuple[str, List[str]]:
+def preprocess_text(text: str) -> Tuple[str, List[str]]:
     """Preprocess text for analysis."""
     cleaned = clean_text(text)
     sentences = tokenize_sentences(cleaned)
