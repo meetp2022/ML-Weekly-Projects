@@ -46,6 +46,8 @@ class AnalyzeResponse(BaseModel):
     confidence: str = Field(..., description="Confidence level")
     metrics: Metrics
     is_reliable: bool
+    modality: str = Field(..., description="Detected text modality (PROSE/TECHNICAL)")
+    modality_warning: Optional[str] = Field(None, description="Warning message for specific modalities")
     sentence_scores: List[SentenceScore]
     
     class Config:

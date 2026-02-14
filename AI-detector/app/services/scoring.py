@@ -16,6 +16,7 @@ from app.services.burstiness import calculate_burstiness, normalize_burstiness
 from app.services.repetition import calculate_repetition_score, normalize_repetition
 from app.services.preprocessing import extract_stylometric_features
 from app.models.detector_loader import detector_loader
+from app.services.modality import detect_modality
 import torch
 
 logger = get_logger(__name__)
@@ -61,48 +62,65 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
     
     logger.debug(f"Classifier AI Probability: {classifier_ai_prob:.2f}%")
     
+    # MODALITY DETECTION
+    modality_info = detect_modality(text)
+    is_technical = modality_info['type'] == "TECHNICAL"
+    
     # Normalize to 0-100 scale
     perplexity_score = normalize_perplexity(perplexity)
     burstiness_score = normalize_burstiness(burstiness)
     repetition_score = normalize_repetition(repetition)
     variance_score = normalize_variance(variance)
     
+    # Aggregated Sentence Features (The Core of Consensus)
+    # 1. AI Sentence Ratio (% of sentences > 65%)
+    # 2. Mean Sentence Probability
+    # 3. Longest AI Streak
+    local_scores = [normalize_perplexity(s['perplexity']) for s in sentence_scores]
+    ai_sentence_count = sum(1 for s in local_scores if s >= 65)
+    ai_ratio = (ai_sentence_count / len(sentences)) * 100 if sentences else 0
+    mean_prob = np.mean(local_scores) if local_scores else 0
+    
+    # Calculate Streak
+    max_streak = 0
+    current_streak = 0
+    for s in local_scores:
+        if s >= 65:
+            current_streak += 1
+            max_streak = max(max_streak, current_streak)
+        else:
+            current_streak = 0
+    
+    streak_bonus = min(max_streak / 5.0, 1.0) * 15.0 # Max 15 points bonus for long streaks
+    
     # New Scientific Scores (Inverted for AI risk)
-    # Human text has HIGH CV and HIGH Skew (long tails of complex words)
     cv_score = 100 * (1 - min(dist_metrics['cv'] / 1.5, 1.0))
     skew_score = 100 * (1 - min(max(dist_metrics['skew'], 0) / 4.0, 1.0))
     
-    # Stylometric Scores
-    # Human text has HIGH sentence length variance and HIGH lexical diversity
-    sty_var_score = 100 * (1 - min(sty_metrics['sentence_length_var'] / 150, 1.0))
-    lex_score = 100 * (1 - min(sty_metrics['lexical_diversity'] * 1.5, 1.0))
-    
-    # Weighted combination (Scientific Ensemble v2)
-    # Increasing repetition weight and stabilizing statistical influence
-    statistical_score = (
-        perplexity_score * 0.40 +
-        burstiness_score * 0.15 +
-        repetition_score * 0.20 +
-        variance_score * 0.10 +
-        cv_score * 0.10 +
+    # AGGREGATED CONSENSUS SCORE
+    # We combine the Document-Level Classifier (RoBERTa) with the Sentence-Level Aggregates
+    statistical_base = (
+        perplexity_score * 0.30 +
+        ai_ratio * 0.30 +
+        mean_prob * 0.20 +
+        repetition_score * 0.10 +
+        cv_score * 0.05 +
         skew_score * 0.05
     )
     
-    # Final Hybrid Score
-    final_score = (classifier_ai_prob * 0.60) + (statistical_score * 0.40)
+    # Add streak bonus for consistent patterns
+    statistical_base = min(statistical_base + streak_bonus, 100)
     
-    # NEW: Statistical Floor (Prevents total false negatives)
-    # If the math screams AI (PPL > 90 or Repetition > 70), 
-    # don't let the classifier pull it below "Uncertain" (40%)
-    if (perplexity_score > 90 or repetition_score > 70) and final_score < 40:
-        logger.info("Statistical Floor triggered: Overriding classifier human bias")
-        final_score = 40.0 + (final_score * 0.2) # Soft floor at 40%+
+    # Final Hybrid Score (Classifier + Aggregated Stats)
+    if is_technical:
+        # For technical text, we trust the statistical patterns more than the prose-trained classifier
+        final_score = statistical_base
+        modality_warning = "Technical/Code detected - reliability is reduced for this modality."
+    else:
+        final_score = (classifier_ai_prob * 0.50) + (statistical_base * 0.50)
+        modality_warning = None
     
-    # Apply "Structural Variety" credit ONLY ifRoBERTa isn't highly suspicious
-    if (variance > 20 or burstiness > 0.4) and classifier_ai_prob < 65:
-        final_score *= 0.85
-    
-    # Refined Thresholds (0-35 Human | 35-65 Mixed | 65-100 AI)
+    # Refined Thresholds
     if final_score >= 65:
         label = "AI-generated"
         confidence = "high" if final_score >= 85 else "medium"
@@ -113,13 +131,12 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
         label = "Uncertain"
         confidence = "low"
     
-    # Reliability check (Character count < 150)
-    # User requested character-based threshold: "It should not reflect if the character count exceeds 150"
-    is_reliable = len(text) >= 150
+    # Reliability check
+    is_reliable = len(text) >= 150 and not is_technical
     
     logger.info(
-        f"Final score: {final_score:.2f} ({label}) - Reliable: {is_reliable} - "
-        f"PPL={perplexity_score:.1f}, Burst={burstiness_score:.1f}, CV={cv_score:.1f}, Skew={skew_score:.1f}"
+        f"Final score: {final_score:.2f} ({label}) - Modality: {modality_info['type']} - "
+        f"AI Ratio={ai_ratio:.1f}%, Mean Prob={mean_prob:.1f}%, PPL={perplexity_score:.1f}"
     )
     
     return {
@@ -127,6 +144,8 @@ def calculate_final_score(text: str, sentences: List[str]) -> Dict[str, any]:
         'label': label,
         'confidence': confidence,
         'is_reliable': is_reliable,
+        'modality': modality_info['type'],
+        'modality_warning': modality_warning,
         'metrics': {
             'perplexity': round(perplexity, 2),
             'perplexity_score': round(perplexity_score, 2),

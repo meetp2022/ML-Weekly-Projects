@@ -142,10 +142,22 @@ function displayResults(data) {
         scoreExplanation.textContent = 'Mixed structural signals detected. The text contains both machine-like consistency and human-like variation.';
     }
 
-    // Handle reliability warning
-    const shortTextWarning = document.getElementById('shortTextWarning');
-    if (shortTextWarning) {
-        shortTextWarning.style.display = data.is_reliable ? 'none' : 'block';
+    // Display modality warning if present
+    const warningDiv = document.getElementById('shortTextWarning');
+    if (data.modality_warning) {
+        warningDiv.innerHTML = `⚠️ <strong>${data.modality_warning}</strong>`;
+        warningDiv.style.display = 'block';
+        warningDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+        warningDiv.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+        warningDiv.style.color = '#ef4444';
+    } else if (!data.is_reliable) {
+        warningDiv.innerHTML = `⚠️ <strong>Text too short:</strong> Analysis of texts under 150 characters may be less accurate.`;
+        warningDiv.style.display = 'block';
+        warningDiv.style.background = 'rgba(245, 158, 11, 0.1)';
+        warningDiv.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+        warningDiv.style.color = 'var(--warning)';
+    } else {
+        warningDiv.style.display = 'none';
     }
 
     // Add confidence explanations

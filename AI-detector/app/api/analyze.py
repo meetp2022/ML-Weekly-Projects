@@ -43,6 +43,8 @@ async def analyze_text(request: AnalyzeRequest) -> AnalyzeResponse:
             confidence=result['confidence'],
             metrics=result['metrics'],
             is_reliable=result['is_reliable'],
+            modality=result['modality'],
+            modality_warning=result['modality_warning'],
             sentence_scores=sentence_scores
         )
         
