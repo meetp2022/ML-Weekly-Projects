@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIChecking | Free AI Detection Tool | Detect AI Generated Text</title>
+    <meta name="description"
+        content="Free AI detection tool to identify AI-generated text. Check content authenticity instantly using our AI detector.">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords"
+        content="free ai text detector, student ai detection tool, check ai generated content online, ai generated text checker">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Umami Analytics -->
+    <script async defer data-website-id="60a83307-5537-4760-b6ae-4833fdd8fcd1"
+        src="https://cloud.umami.is/script.js"></script>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="32" height="32" rx="8" fill="url(#gradient)" />
+                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white" opacity="0.9" />
+                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.6" />
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#667eea" />
+                            <stop offset="100%" stop-color="#764ba2" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>AIChecking</h1>
+            </div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span>Ready</span>
+            </div>
+        </header>
+
+        <!-- Micro Description & Trust Boosters -->
+        <p class="micro-description">
+            AIChecking.me provides probabilistic insights into whether a text may be AI-generated, without storing your
+            content.
+        </p>
+
+        <div class="trust-boosters">
+            <div class="trust-item">
+                <span>🔒</span>
+                <span>No text storage</span>
+            </div>
+            <div class="trust-item">
+                <span>⚡</span>
+                <span>Fast analysis</span>
+            </div>
+            <div class="trust-item">
+                <span>📊</span>
+                <span>Probabilistic results</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="section-header">
+                    <h2>Analyze Text</h2>
+                    <p>Paste your text below to detect AI-generated content</p>
+                </div>
+
+                <div class="input-wrapper">
+                    <textarea id="textInput" placeholder="Enter or paste text here (minimum 10 characters)..."
+                        rows="10"></textarea>
+                    <div id="shortTextWarning"
+                        style="display: none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--warning); padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: var(--spacing-sm);">
+                        ⚠️ <strong>Text too short:</strong> Analysis of texts under 150 characters may be less accurate.
+                    </div>
+                    <div class="input-footer">
+                        <span class="char-count" id="charCount">0 / 10,000</span>
+                        <button id="analyzeBtn" class="btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M10 3L15 8L10 13L5 8L10 3Z" stroke="currentColor" stroke-width="2" />
+                                <path d="M10 10L15 15L10 20L5 15L10 10Z" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                            Analyze Text
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Analysis Results</h2>
+                </div>
+
+                <!-- Score Card -->
+                <div class="score-card">
+                    <div class="score-display">
+                        <div class="score-circle" id="scoreCircle">
+                            <svg class="score-ring" width="160" height="160">
+                                <circle cx="80" cy="80" r="70" class="score-ring-bg" />
+                                <circle cx="80" cy="80" r="70" class="score-ring-fill" id="scoreRingFill" />
+                            </svg>
+                            <div class="score-value">
+                                <span id="scoreValue">0</span>
+                                <span class="score-label" id="scoreLabelText">AI Writing Risk</span>
+                            </div>
+                        </div>
+                        <div class="score-info">
+                            <div class="score-label-main" id="scoreLabel">Analyzing...</div>
+                            <div class="risk-legend" id="riskLegend">
+                                <span class="legend-risk low">0-35% Likely Human</span>
+                                <span class="legend-risk mixed">35-65% Mixed Signals</span>
+                                <span class="legend-risk high">65-100% High AI Pattern</span>
+                            </div>
+                            <div class="score-explanation" id="scoreExplanation"></div>
+                            <div class="score-confidence" id="scoreConfidence">
+                                Confidence: -
+                                <span class="metric-info"
+                                    title="Confidence measures how strongly the statistical patterns match known AI or human writing distributions.">ⓘ</span>
+                            </div>
+                            <div class="confidence-explanation" id="confidenceExplanation"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="white" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-header">
+                                <div class="metric-label">Perplexity</div>
+                                <div class="metric-info"
+                                    title="Measures text predictability. Higher values (>250) are typical for human writing; lower values (<220) are common for AI.">
+                                    ⓘ</div>
+                            </div>
+                            <div class="metric-value-wrapper">
+                                <div class="metric-value" id="perplexityValue">-</div>
+                                <div class="benchmark-label">Human: 150-300+ | AI: 10-80</div>
+                            </div>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" id="perplexityBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 12h4l3 9 4-18 3 9h4" stroke="white" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-header">
+                                <div class="metric-label">Burstiness</div>
+                                <div class="metric-info"
+                                    title="Variation in sentence lengths. Human writing tends to have more variation.">ⓘ
+                                </div>
+                            </div>
+                            <div class="metric-value" id="burstinessValue">-</div>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" id="burstinessBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M4 7h16M4 12h16M4 17h10" stroke="white" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-header">
+                                <div class="metric-label">Repetition</div>
+                                <div class="metric-info"
+                                    title="How repetitive the text patterns are. AI text often has more repetition.">ⓘ
+                                </div>
+                            </div>
+                            <div class="metric-value" id="repetitionValue">-</div>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" id="repetitionBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Metric: Perplexity Variance -->
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M13 17V7M9 13V11M17 19V5" stroke="white" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-header">
+                                <div class="metric-label">Variance</div>
+                                <div class="metric-info"
+                                    title="Fluctuation in perplexity. Human writing varies more; AI is more consistent.">
+                                    ⓘ
+                                </div>
+                            </div>
+                            <div class="metric-value" id="varianceValue">-</div>
+                            <div class="metric-bar">
+                                <div class="metric-bar-fill" id="varianceBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentence Highlighting -->
+                <div class="highlight-section">
+                    <h3>Sentence-Level Analysis</h3>
+                    <p class="highlight-legend">
+                        <span class="legend-item">
+                            <span class="legend-color" style="background: rgba(16, 185, 129, 0.3);"></span>
+                            Human-like
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-color" style="background: rgba(102, 126, 234, 0.4);"></span>
+                            Uncertain
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-color" style="background: rgba(239, 68, 68, 0.5);"></span>
+                            AI-like
+                        </span>
+                    </p>
+                    <div class="highlighted-text" id="highlightedText"></div>
+                </div>
+            </section>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Analyzing text...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Methodology Section -->
+        <section class="methodology-section">
+            <div class="section-header">
+                <h3>About This Analysis</h3>
+                <p>Scientific approach to detecting synthetic content</p>
+            </div>
+            <div class="methodology-content">
+                <p>This tool employs a multi-dimensional statistical model to estimate AI involvement. Our algorithm
+                    analyzes
+                    <strong>perplexity</strong> (predictability), <strong>burstiness</strong> (structural variation),
+                    <strong>repetition</strong> (pattern frequency), and <strong>stylometric variance</strong> (internal
+                    consistency).
+                    The result is a probabilistic risk estimate, not a definitive verdict.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>AIChecking.me • <a href="how-ai-detection-works.html">How it works</a> • <a href="/docs"
+                    target="_blank">API Docs</a></p>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="mailto:contact@aichecking.me">contact@aichecking.me</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="cookie-text">
+            We use cookies and similar technologies to improve user experience and display relevant ads. By continuing
+            to use this site, you agree to our <a href="privacy.html">Privacy Policy</a>.
+        </div>
+        <div class="cookie-actions">
+            <a href="about.html" class="btn-cookie-learn">Learn more</a>
+            <button id="acceptCookies" class="btn-cookie-accept">Accept</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

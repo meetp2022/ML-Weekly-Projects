@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - AIChecking.me</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Umami Analytics -->
+    <script async defer data-website-id="60a83307-5537-4760-b6ae-4833fdd8fcd1"
+        src="https://cloud.umami.is/script.js"></script>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+                <header class="header">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="32" height="32" rx="8" fill="url(#gradient)" />
+                    <path d="M16 8L20 12L16 16L12 12L16 8Z" fill="white" opacity="0.9" />
+                    <path d="M16 16L20 20L16 24L12 20L16 16Z" fill="white" opacity="0.6" />
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#667eea" />
+                            <stop offset="100%" stop-color="#764ba2" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>AIChecking</h1>
+            </div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span>Ready</span>
+            </div>
+        </header>
+
+        <main class="legal-content">
+            <a href="index.html" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="margin-top: -2px;">
+                    <path d="M15 10H5M5 10L10 15M5 10L10 5" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Back to Home
+            </a>
+
+            <h1>Terms of Service</h1>
+            <p class="last-updated">Last Updated: February 2026</p>
+
+            <section>
+                <h2>1. Acceptance of Terms</h2>
+                <p>By accessing and using AIChecking.me, you agree to comply with and be bound by these Terms of
+                    Service.
+                    If you do not agree to these terms, please do not use our service.</p>
+            </section>
+
+            <section>
+                <h2>2. Use of Service</h2>
+                <p>AIChecking.me provide probabilistic analysis of text to estimate the likelihood of AI generation. Our
+                    results are estimates and should not be used as definitive proof of authorship.</p>
+            </section>
+
+            <section>
+                <h2>3. Disclaimer of Warranties</h2>
+                <p>The service is provided "as is" and "as available". We do not warrant that the results are 100%
+                    accurate or that the service will be uninterrupted or error-free.</p>
+            </section>
+
+            <section>
+                <h2>4. Limitation of Liability</h2>
+                <p>AIChecking.me and its operators shall not be liable for any damages arising out of the use or
+                    inability
+                    to use the service.</p>
+            </section>
+
+            <section>
+                <h2>5. Changes to Terms</h2>
+                <p>We reserve the right to modify these terms at any time. Your continued use of the service constitutes
+                    acceptance of the new terms.</p>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>AIChecking.me • <a href="how-ai-detection-works.html">How it works</a> • <a href="privacy.html">Privacy
+                    Policy</a> • <a href="terms.html">Terms of Service</a> • <a
+                    href="mailto:contact@aichecking.me">contact@aichecking.me</a></p>
+        </footer>
+    </div>
+
+    <script>
+        const siteLogo = document.getElementById('siteLogo');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        function updateLogo(isDark) {
+            if (siteLogo) siteLogo.src = isDark ? 'assets/logo-dark.png?v=1.0.2' : 'assets/logo-light.svg?v=1.0.1';
+        }
+        updateLogo(prefersDark.matches);
+        prefersDark.addEventListener('change', (e) => updateLogo(e.matches));
+    </script>
+</body>
+
+</html>
